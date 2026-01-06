@@ -60,52 +60,91 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Setup Node.js
+    - name: Setup Node.js for Vite
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: 'web/package-lock.json'
+        cache-dependency-path: 'package-lock.json'
 
-    - name: Build Frontend
+    - name: Build Vite Frontend
       id: build-frontend
       run: |
-        cd web
         npm ci
         npm run build
 
-    - name: Build App Docker image
-      id: build-app
+    - name: Setup Node.js for Next.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'nextjs-landing/package-lock.json'
+
+    - name: Build Next.js Landing Page
+      id: build-nextjs
       run: |
-        FULL_IMAGE=$REGISTRY_URL/$APP_IMAGE_NAME
-        # 构建并打标签（Harbor + GHCR）
+        cd nextjs-landing
+        npm ci
+        npm run build
+
+    - name: Build Vite Docker image
+      id: build-vite
+      run: |
+        VITE_IMAGE=$REGISTRY_URL/swiftcode-vite
+        GHCR_VITE_IMAGE=ghcr.io/$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')/swiftcode-vite
+        # 构建 Vite 应用镜像
         docker build \
-          -t $FULL_IMAGE:${{ env.TAG }} \
-          -t $FULL_IMAGE:latest \
-          -t $GHCR_APP_IMAGE:${{ env.TAG }} \
-          -t $GHCR_APP_IMAGE:latest \
+          -t $VITE_IMAGE:${{ env.TAG }} \
+          -t $VITE_IMAGE:latest \
+          -t $GHCR_VITE_IMAGE:${{ env.TAG }} \
+          -t $GHCR_VITE_IMAGE:latest \
           .
+        echo "VITE_IMAGE=$VITE_IMAGE" >> $GITHUB_ENV
+        echo "GHCR_VITE_IMAGE=$GHCR_VITE_IMAGE" >> $GITHUB_ENV
 
-    - name: Push App Docker image to GHCR
-      id: push-app-ghcr
+    - name: Build Next.js Docker image
+      id: build-nextjs-docker
       run: |
-        docker push $GHCR_APP_IMAGE:${{ env.TAG }}
-        docker push $GHCR_APP_IMAGE:latest
+        NEXTJS_IMAGE=$REGISTRY_URL/swiftcode-nextjs
+        GHCR_NEXTJS_IMAGE=ghcr.io/$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')/swiftcode-nextjs
+        # 构建 Next.js 应用镜像
+        docker build \
+          -t $NEXTJS_IMAGE:${{ env.TAG }} \
+          -t $NEXTJS_IMAGE:latest \
+          -t $GHCR_NEXTJS_IMAGE:${{ env.TAG }} \
+          -t $GHCR_NEXTJS_IMAGE:latest \
+          ./nextjs-landing
+        echo "NEXTJS_IMAGE=$NEXTJS_IMAGE" >> $GITHUB_ENV
+        echo "GHCR_NEXTJS_IMAGE=$GHCR_NEXTJS_IMAGE" >> $GITHUB_ENV
 
-    - name: Push App Docker image to Harbor
-      id: push-app
+    - name: Push Vite image to GHCR
+      id: push-vite-ghcr
       run: |
-        FULL_IMAGE=$REGISTRY_URL/$APP_IMAGE_NAME
-        docker push $FULL_IMAGE:${{ env.TAG }}
-        docker push $FULL_IMAGE:latest
+        docker push $GHCR_VITE_IMAGE:${{ env.TAG }}
+        docker push $GHCR_VITE_IMAGE:latest
+
+    - name: Push Next.js image to GHCR
+      id: push-nextjs-ghcr
+      run: |
+        docker push $GHCR_NEXTJS_IMAGE:${{ env.TAG }}
+        docker push $GHCR_NEXTJS_IMAGE:latest
+
+    - name: Push Vite image to Harbor
+      id: push-vite-harbor
+      run: |
+        docker push $VITE_IMAGE:${{ env.TAG }}
+        docker push $VITE_IMAGE:latest
+
+    - name: Push Next.js image to Harbor
+      id: push-nextjs-harbor
+      run: |
+        docker push $NEXTJS_IMAGE:${{ env.TAG }}
+        docker push $NEXTJS_IMAGE:latest
 
 
     - name: Notify Success
       if: success()
       run: |
-        APP_IMAGE=$REGISTRY_URL/${APP_IMAGE_NAME}
-        APP_PULL_CMD="docker pull ${APP_IMAGE}:${{ env.TAG }}"
-        GHCR_APP_PULL_CMD="docker pull ${GHCR_APP_IMAGE}:${{ env.TAG }}"
         COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
         WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
@@ -113,10 +152,12 @@ jobs:
         🎉 构建成功
 
         📦 Harbor 镜像:
-        • 主应用: ${APP_IMAGE}:${{ env.TAG }}
+        • Vite 应用: ${VITE_IMAGE}:${{ env.TAG }}
+        • Next.js 应用: ${NEXTJS_IMAGE}:${{ env.TAG }}
 
         📦 GHCR 镜像:
-        • 主应用: ${GHCR_APP_IMAGE}:${{ env.TAG }}
+        • Vite 应用: ${GHCR_VITE_IMAGE}:${{ env.TAG }}
+        • Next.js 应用: ${GHCR_NEXTJS_IMAGE}:${{ env.TAG }}
 
         🕒 构建时间: ${{ env.DATE_TAG }}
         🔖 标签: ${{ env.TAG }}
@@ -126,12 +167,14 @@ jobs:
 
         📥 Harbor 拉取命令:
         \`\`\`
-        ${APP_PULL_CMD}
+        docker pull ${VITE_IMAGE}:${{ env.TAG }}
+        docker pull ${NEXTJS_IMAGE}:${{ env.TAG }}
         \`\`\`
 
         📥 GHCR 拉取命令:
         \`\`\`
-        ${GHCR_APP_PULL_CMD}
+        docker pull ${GHCR_VITE_IMAGE}:${{ env.TAG }}
+        docker pull ${GHCR_NEXTJS_IMAGE}:${{ env.TAG }}
         \`\`\`
 
         🔗 链接:
@@ -147,7 +190,6 @@ jobs:
     - name: Notify Failure
       if: failure()
       run: |
-        APP_IMAGE=$REGISTRY_URL/${APP_IMAGE_NAME}
         COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
         WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
@@ -158,19 +200,26 @@ jobs:
         elif [[ "${{ steps.login-ghcr.outcome }}" == "failure" ]]; then
           FAILED_STEP="登录GHCR失败"
         elif [[ "${{ steps.build-frontend.outcome }}" == "failure" ]]; then
-          FAILED_STEP="前端构建失败"
-        elif [[ "${{ steps.build-app.outcome }}" == "failure" ]]; then
-          FAILED_STEP="主应用Docker镜像构建失败"
-        elif [[ "${{ steps.push-app.outcome }}" == "failure" ]]; then
-          FAILED_STEP="主应用镜像推送到Harbor失败"
-        elif [[ "${{ steps.push-app-ghcr.outcome }}" == "failure" ]]; then
-          FAILED_STEP="主应用镜像推送到GHCR失败"
+          FAILED_STEP="Vite前端构建失败"
+        elif [[ "${{ steps.build-nextjs.outcome }}" == "failure" ]]; then
+          FAILED_STEP="Next.js构建失败"
+        elif [[ "${{ steps.build-vite.outcome }}" == "failure" ]]; then
+          FAILED_STEP="Vite Docker镜像构建失败"
+        elif [[ "${{ steps.build-nextjs-docker.outcome }}" == "failure" ]]; then
+          FAILED_STEP="Next.js Docker镜像构建失败"
+        elif [[ "${{ steps.push-vite-harbor.outcome }}" == "failure" ]]; then
+          FAILED_STEP="Vite镜像推送到Harbor失败"
+        elif [[ "${{ steps.push-nextjs-harbor.outcome }}" == "failure" ]]; then
+          FAILED_STEP="Next.js镜像推送到Harbor失败"
+        elif [[ "${{ steps.push-vite-ghcr.outcome }}" == "failure" ]]; then
+          FAILED_STEP="Vite镜像推送到GHCR失败"
+        elif [[ "${{ steps.push-nextjs-ghcr.outcome }}" == "failure" ]]; then
+          FAILED_STEP="Next.js镜像推送到GHCR失败"
         fi
 
         MSG=$(cat <<EOF
         ❌ 构建失败
 
-        📦 主应用镜像: ${APP_IMAGE}
         🕒 构建时间: ${{ env.DATE_TAG }}
         🔖 标签: ${{ env.TAG }}
         🔁 Commit: ${{ env.SHORT_SHA }}
