@@ -129,17 +129,17 @@ jobs:
         docker push $GHCR_NEXTJS_IMAGE:${{ env.TAG }}
         docker push $GHCR_NEXTJS_IMAGE:latest
 
-    - name: Push Vite image to Harbor
-      id: push-vite-harbor
-      run: |
-        docker push $VITE_IMAGE:${{ env.TAG }}
-        docker push $VITE_IMAGE:latest
+    # - name: Push Vite image to Harbor
+    #   id: push-vite-harbor
+    #   run: |
+    #     docker push $VITE_IMAGE:${{ env.TAG }}
+    #     docker push $VITE_IMAGE:latest
 
-    - name: Push Next.js image to Harbor
-      id: push-nextjs-harbor
-      run: |
-        docker push $NEXTJS_IMAGE:${{ env.TAG }}
-        docker push $NEXTJS_IMAGE:latest
+    # - name: Push Next.js image to Harbor
+    #   id: push-nextjs-harbor
+    #   run: |
+    #     docker push $NEXTJS_IMAGE:${{ env.TAG }}
+    #     docker push $NEXTJS_IMAGE:latest
 
 
     - name: Notify Success
@@ -151,10 +151,6 @@ jobs:
         MSG=$(cat <<EOF
         🎉 构建成功
 
-        📦 Harbor 镜像:
-        • Vite 应用: ${VITE_IMAGE}:${{ env.TAG }}
-        • Next.js 应用: ${NEXTJS_IMAGE}:${{ env.TAG }}
-
         📦 GHCR 镜像:
         • Vite 应用: ${GHCR_VITE_IMAGE}:${{ env.TAG }}
         • Next.js 应用: ${GHCR_NEXTJS_IMAGE}:${{ env.TAG }}
@@ -164,13 +160,7 @@ jobs:
         🔁 Commit: ${{ env.SHORT_SHA }}
         👤 提交者: ${{ github.actor }}
         📋 分支: ${{ github.ref_name }}
-
-        📥 Harbor 拉取命令:
-        \`\`\`
-        docker pull ${VITE_IMAGE}:${{ env.TAG }}
-        docker pull ${NEXTJS_IMAGE}:${{ env.TAG }}
-        \`\`\`
-
+        
         📥 GHCR 拉取命令:
         \`\`\`
         docker pull ${GHCR_VITE_IMAGE}:${{ env.TAG }}
