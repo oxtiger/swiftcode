@@ -82,7 +82,7 @@ const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>(
       className,
       ...props
     },
-    ref
+    _ref
   ) => {
     const [isMinimized, setIsMinimized] = useState(false);
     const [cursorVisible, setCursorVisible] = useState(true);
@@ -167,7 +167,6 @@ const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>(
 
     return (
       <motion.div
-        ref={ref}
         className={cn(
           'relative overflow-hidden rounded-lg border-2 font-mono',
           variantClasses[variant].bg,
@@ -179,7 +178,7 @@ const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>(
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        {...props}
+        {...(props as any)}
       >
         {/* Terminal Header */}
         {showHeader && (
@@ -296,4 +295,3 @@ Terminal.displayName = 'Terminal';
 
 export { Terminal };
 export default Terminal;
-export type { TerminalProps, TerminalLine };

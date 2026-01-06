@@ -35,7 +35,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     }
   }, [location.pathname, isMobile, setSidebarOpen]);
 
-  const sidebarWidth = sidebarCollapsed ? 'w-16' : 'w-64';
   const contentMargin = isMobile
     ? 'ml-0'
     : sidebarCollapsed
@@ -88,7 +87,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </div>
 
       {/* 全局样式注入 */}
-      <style jsx global>{`
+      <style>{`
         /* 自定义滚动条 */
         ::-webkit-scrollbar {
           width: 6px;

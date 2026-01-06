@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { User, LoginForm, ApiResponse } from '@/types';
+import type { User, LoginForm } from '@/types';
 
 export interface LoginResponse {
   user: User;

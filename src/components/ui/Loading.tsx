@@ -98,12 +98,6 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
       terminal: 'text-terminal-accent',
     };
 
-    const speedClasses = {
-      slow: 'duration-2000',
-      normal: 'duration-1000',
-      fast: 'duration-500',
-    };
-
     const overlayClasses = {
       light: 'bg-white/70 dark:bg-gray-900/70',
       medium: 'bg-white/80 dark:bg-gray-900/80',
@@ -175,13 +169,13 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
                 borderTopColor: 'currentColor',
               }}
               variants={spinnerVariants}
-              animate=\"animate\"
+              animate="animate"
             />
           );
 
         case 'dots':
           return (
-            <div className=\"flex space-x-1\">
+            <div className="flex space-x-1">
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
@@ -194,7 +188,7 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
                     variantClasses[variant]
                   )}
                   variants={dotVariants}
-                  animate=\"animate\"
+                  animate="animate"
                   custom={i}
                   transition={{
                     delay: i * 0.2,
@@ -213,13 +207,13 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
                 variantClasses[variant]
               )}
               variants={pulseVariants}
-              animate=\"animate\"
+              animate="animate"
             />
           );
 
         case 'bars':
           return (
-            <div className=\"flex items-end space-x-1\">
+            <div className="flex items-end space-x-1">
               {[0, 1, 2, 3].map((i) => (
                 <motion.div
                   key={i}
@@ -251,7 +245,7 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
 
         case 'wave':
           return (
-            <div className=\"flex items-center space-x-1\">
+            <div className="flex items-center space-x-1">
               {[0, 1, 2, 3, 4].map((i) => (
                 <motion.div
                   key={i}
@@ -264,7 +258,7 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
                     variantClasses[variant]
                   )}
                   variants={waveVariants}
-                  animate=\"animate\"
+                  animate="animate"
                   custom={i}
                 />
               ))}
@@ -284,7 +278,7 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
                 borderRightColor: 'currentColor',
               }}
               variants={spinnerVariants}
-              animate=\"animate\"
+              animate="animate"
             />
           );
 
@@ -367,7 +361,7 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
 
         case 'claude':
           return (
-            <div className=\"relative\">
+            <div className="relative">
               <motion.div
                 className={cn(
                   'border-2 border-gray-200 dark:border-gray-700 rounded-full',
@@ -380,10 +374,10 @@ const Loading = React.forwardRef<HTMLDivElement, LoadingProps>(
                   borderLeftColor: '#3b82f6',
                 }}
                 variants={spinnerVariants}
-                animate=\"animate\"
+                animate="animate"
               />
               <motion.div
-                className=\"absolute inset-0 flex items-center justify-center\"
+                className="absolute inset-0 flex items-center justify-center"
                 animate={{
                   scale: [1, 1.1, 1],
                   opacity: [0.6, 1, 0.6],
@@ -466,4 +460,3 @@ Loading.displayName = 'Loading';
 
 export { Loading };
 export default Loading;
-export type { LoadingProps };

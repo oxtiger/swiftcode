@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import {
   apiStatsClient,
-  formatCost,
   calculateSummaryStats,
 } from '@/services/apiStats';
 import type { UserStatsData, ModelStatsData } from '@/services/apiStats';
@@ -331,43 +330,6 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
     set({ currentPeriodData, usagePercentages });
   },
 
-  // 更新计算属性
-  updateComputedProperties: () => {
-    const { statsPeriod, dailyStats, monthlyStats, statsData } = get();
-
-    // 更新 currentPeriodData
-    let currentPeriodData;
-    if (statsPeriod === 'daily') {
-      currentPeriodData = dailyStats || defaultPeriodData;
-    } else {
-      currentPeriodData = monthlyStats || defaultPeriodData;
-    }
-
-    // 计算使用百分比
-    let usagePercentages = defaultUsagePercentages;
-    if (statsData && currentPeriodData) {
-      const current = currentPeriodData;
-      const limits = statsData.limits;
-
-      usagePercentages = {
-        tokenUsage:
-          limits.tokenLimit > 0
-            ? Math.min((current.allTokens / limits.tokenLimit) * 100, 100)
-            : 0,
-        costUsage:
-          limits.dailyCostLimit > 0
-            ? Math.min((limits.currentDailyCost / limits.dailyCostLimit) * 100, 100)
-            : 0,
-        requestUsage:
-          limits.rateLimitRequests > 0
-            ? Math.min((limits.currentWindowRequests / limits.rateLimitRequests) * 100, 100)
-            : 0,
-      };
-    }
-
-    set({ currentPeriodData, usagePercentages });
-  },
-
   // 清除数据
   clearData: () => {
     set({
@@ -429,9 +391,6 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
       });
 
       console.log('refreshBasicStats - statsData set successfully');
-
-      // 更新计算属性
-      get().updateComputedProperties();
     } catch (err) {
       console.error('Refresh basic stats error:', err);
       const errorMessage =

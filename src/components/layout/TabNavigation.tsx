@@ -53,7 +53,6 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
 }) => {
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [draggedTab, setDraggedTab] = useState<string | null>(null);
 
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -133,17 +132,15 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
 
   // 拖拽处理
   const handleDragStart = (e: React.DragEvent, tabId: string) => {
-    setIsDragging(true);
     setDraggedTab(tabId);
     e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleDragEnd = () => {
-    setIsDragging(false);
     setDraggedTab(null);
   };
 
-  const renderTab = (tab: Tab, index: number) => {
+  const renderTab = (tab: Tab) => {
     const isActive = tab.id === activeTabId;
     const Icon = tab.icon;
     const isDraggedOver = draggedTab === tab.id;
@@ -159,7 +156,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         className={`focus-ring group relative flex cursor-pointer items-center space-x-2 whitespace-nowrap transition-all duration-200 select-none ${sizeClasses[size]} ${currentVariant.tab} ${isActive ? currentVariant.activeTab : currentVariant.inactiveTab} ${tab.disabled ? 'cursor-not-allowed opacity-50' : ''} ${tab.pinned ? 'order-first' : ''} ${isDraggedOver ? 'opacity-50' : ''} ${tab.className || ''} `}
         onClick={() => !tab.disabled && onTabChange?.(tab.id)}
         draggable={!tab.pinned && !tab.disabled}
-        onDragStart={(e) => handleDragStart(e, tab.id)}
+        onDragStart={(e: any) => handleDragStart(e, tab.id)}
         onDragEnd={handleDragEnd}
         title={tab.label}
       >
@@ -257,7 +254,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         >
           <div ref={tabsRef} className="flex items-center space-x-1">
             <AnimatePresence mode="popLayout">
-              {tabs.map((tab, index) => renderTab(tab, index))}
+              {tabs.map((tab) => renderTab(tab))}
             </AnimatePresence>
           </div>
         </div>

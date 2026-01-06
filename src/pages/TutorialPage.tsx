@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { cn } from '@/utils';
 
 /**

@@ -57,7 +57,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     },
-    ref
+    _ref
   ) => {
     const baseClasses = [
       'relative inline-flex items-center justify-center font-medium transition-all duration-200',
@@ -130,7 +130,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <motion.button
-        ref={ref}
         className={cn(
           baseClasses,
           variantClasses[variant],
@@ -141,7 +140,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
         whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-        {...props}
+        {...(props as any)}
       >
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -184,4 +183,3 @@ Button.displayName = 'Button';
 
 export { Button };
 export default Button;
-export type { ButtonProps };

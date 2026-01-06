@@ -1,4 +1,4 @@
-import { apiClient } from './api';
+import { api as apiClient } from './api';
 import type { User, ApiKey, ClaudeAccount, SystemStats } from '@/types';
 
 // 认证相关

@@ -49,6 +49,9 @@ export const useAuthStore = create<AuthState>()(
               username: response.username || credentials.username,
               email: '', // 待后端提供
               role: 'admin',
+              isActive: true,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
             };
 
             set({

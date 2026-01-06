@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   AreaChart,
@@ -146,9 +146,6 @@ export const UsageStatsPage: React.FC = () => {
 
   const tokenDistribution = getTokenDistribution();
   const processedModelStats = generateModelStats();
-
-  // 图表颜色配置
-  const CHART_COLORS = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#f59e0b'];
 
   /**
    * 生成Token分布饼图数据

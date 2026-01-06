@@ -15,13 +15,13 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   requirePermissions = [],
   fallback = <div>Loading...</div>,
 }) => {
-  const { isAuthenticated, user, permissions, checkAuth, loading } =
+  const { isAuthenticated, permissions, checkAuth, loading } =
     useAuthStore();
   const { addNotification } = useLayoutStore();
 
   useEffect(() => {
     if (requireAuth && !isAuthenticated) {
-      checkAuth().catch((error) => {
+      checkAuth().catch(() => {
         addNotification({
           type: 'error',
           title: '认证失败',

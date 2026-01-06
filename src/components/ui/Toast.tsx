@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   IconCheck,
@@ -6,7 +6,7 @@ import {
   IconAlertTriangle,
   IconInfoCircle,
 } from '@tabler/icons-react';
-import { useToastStore, Toast as ToastType } from '@/stores/toast';
+import { useToastStore, type Toast as ToastType } from '@/stores/toast';
 import { cn } from '@/utils';
 
 const Toast: React.FC<{ toast: ToastType }> = ({ toast }) => {

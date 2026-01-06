@@ -3,8 +3,6 @@ export { default as Button } from './ui/Button';
 export {
   default as Card,
   CardHeader,
-  CardTitle,
-  CardDescription,
   CardContent,
   CardFooter,
 } from './ui/Card';

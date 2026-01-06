@@ -309,4 +309,3 @@ TypeWriter.displayName = 'TypeWriter';
 
 export { TypeWriter };
 export default TypeWriter;
-export type { TypeWriterProps };

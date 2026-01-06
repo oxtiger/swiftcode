@@ -5,7 +5,7 @@ import { Terminal } from '@/components/ui/Terminal';
 import { TypeWriter } from '@/components/ui/TypeWriter';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ export const HomePage: React.FC = () => {
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
                 <TypeWriter
                   text="强大的 AI API 中转服务，支持 Claude 和 Gemini 双平台"
-                  delay={30}
+                  speed={30}
                 />
               </p>
 
@@ -124,7 +124,7 @@ export const HomePage: React.FC = () => {
                   &nbsp;&nbsp;-H "Content-Type: application/json" \
                 </div>
                 <div className="text-gray-400 mb-2">
-                  &nbsp;&nbsp;-d '{"model": "claude-3-sonnet", "messages": [...]}'
+                  &nbsp;&nbsp;-d {`'{"model": "claude-3-sonnet", "messages": [...]}'`}
                 </div>
                 <div className="text-blue-400 mt-4">
                   ← 自动负载均衡到可用的 Claude 账户

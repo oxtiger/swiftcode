@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { type AxiosResponse, AxiosError } from 'axios';
 import type { ApiResponse } from '@/types';
 import { useAuthStore } from '@/stores/auth';
 

@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/auth';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 import { Terminal } from '@/components/ui/Terminal';
 import { TypeWriter } from '@/components/ui/TypeWriter';
 
@@ -29,8 +29,8 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleInputChange = (field: string) => (value: string) => {
-    setCredentials(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCredentials(prev => ({ ...prev, [field]: e.target.value }));
   };
 
   return (
@@ -84,7 +84,7 @@ export const LoginPage: React.FC = () => {
             >
               <TypeWriter
                 text="SwiftCode MAX"
-                delay={50}
+                speed={50}
                 className="text-gradient bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent"
               />
             </motion.h1>

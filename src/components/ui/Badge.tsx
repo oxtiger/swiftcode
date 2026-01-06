@@ -73,7 +73,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       className,
       ...props
     },
-    ref
+    _ref
   ) => {
     const baseClasses = [
       'inline-flex items-center justify-center font-medium transition-all duration-200',
@@ -177,7 +177,6 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
 
     return (
       <motion.span
-        ref={ref}
         className={cn(
           baseClasses,
           variantClasses[variant],
@@ -190,7 +189,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         whileHover={clickable ? { scale: 1.05 } : {}}
         whileTap={clickable ? { scale: 0.95 } : {}}
         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-        {...props}
+        {...(props as any)}
       >
         {/* 左侧点指示器 */}
         {dot && dotPosition === 'left' && (
@@ -262,4 +261,3 @@ Badge.displayName = 'Badge';
 
 export { Badge };
 export default Badge;
-export type { BadgeProps };

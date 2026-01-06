@@ -23,8 +23,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ className = '' }) => {
   const {
-    sidebarOpen,
-    sidebarCollapsed,
     isMobile,
     toggleSidebar,
     isDark,

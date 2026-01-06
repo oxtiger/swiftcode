@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/stores/auth';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 import { Button } from '@/components/ui/Button';
 
 interface LayoutProps {

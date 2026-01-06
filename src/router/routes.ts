@@ -195,13 +195,14 @@ export const generateBreadcrumbs = (pathname: string) => {
       breadcrumbs.push({
         label: route.title,
         href: currentPath,
-        icon: route.icon,
+        icon: route.icon as any,
       });
     } else {
       // 处理动态路由参数
       breadcrumbs.push({
         label: segment.charAt(0).toUpperCase() + segment.slice(1),
         href: currentPath,
+        icon: undefined as any,
       });
     }
   }

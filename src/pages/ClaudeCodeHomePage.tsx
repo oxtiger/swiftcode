@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CodeTypewriter } from '@/components/ui/CodeTypewriter';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 
 export const ClaudeCodeHomePage: React.FC = () => {
   const navigate = useNavigate();
   const [pricingMode, setPricingMode] = useState<'payAsYouGo' | 'monthly'>('payAsYouGo');
+  const [showQRCode, setShowQRCode] = useState(false);
 
   const handleGetStarted = () => {
     navigate('/dashboard');
@@ -15,6 +15,14 @@ export const ClaudeCodeHomePage: React.FC = () => {
 
   const handleTutorial = () => {
     navigate('/tutorial');
+  };
+
+  const handleShowQRCode = () => {
+    setShowQRCode(true);
+  };
+
+  const handleCloseQRCode = () => {
+    setShowQRCode(false);
   };
 
   const handleScrollToServices = () => {
@@ -34,12 +42,12 @@ const client = new ClaudeCodeClient({
 
 // 自动负载均衡到可用的 Claude MAX 账户
 const response = await client.messages.create({
-  model: 'claude-4-sonnet',
+  model: 'claude-4.5-opus',
   messages: [{
     role: 'user',
     content: '请帮我分析这段代码的性能优化方案'
   }],
-  max_tokens: 1000
+  max_tokens: 1000000
 });
 
 console.log(response.content);
@@ -478,9 +486,9 @@ console.log(response.content);
                 delay: 0.1
               },
               {
-                title: "双平台原生支持",
+                title: "平台原生支持",
                 subtitle: "开箱即用",
-                description: "Claude Code + Codex API 无缝接入，开箱即用，接口100%原生，无需改造，接入即用，开发效率翻倍",
+                description: "Claude Code 无缝接入，开箱即用，接口100%原生，无需改造，接入即用，开发效率翻倍",
                 icon: (
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -711,7 +719,7 @@ console.log(response.content);
                       popular: false
                     }
                   ].map((plan, index) => {
-                    const descriptions = {
+                    const descriptions: Record<string, string> = {
                       "体验包": "适合个人开发者初步体验",
                       "普通包": "适合轻量级个人项目",
                       "进阶包": "适合小型团队和个人项目",
@@ -830,7 +838,7 @@ console.log(response.content);
                               ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
                               : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
                           } text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300`}
-                          onClick={handleGetStarted}
+                          onClick={handleShowQRCode}
                         >
                           <span className="text-sm">立即选择</span>
                         </Button>
@@ -900,7 +908,7 @@ console.log(response.content);
                       popular: false
                     }
                   ].map((plan, index) => {
-                    const descriptions = {
+                    const descriptions: Record<string, string> = {
                       "标准套餐": "适合个人开发者和小项目",
                       "进阶套餐": "适合小型团队和个人项目",
                       "专业套餐": "适合中型团队和商业项目",
@@ -1028,7 +1036,7 @@ console.log(response.content);
                               ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
                               : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
                           } text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300`}
-                          onClick={handleGetStarted}
+                          onClick={handleShowQRCode}
                         >
                           <span className="text-sm">立即选择</span>
                         </Button>
@@ -1070,6 +1078,7 @@ console.log(response.content);
               <Button
                 variant="secondary"
                 size="lg"
+                onClick={handleShowQRCode}
                 className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 border-stone-300 text-stone-700 hover:bg-stone-100 w-full sm:w-auto"
               >
                 联系我们
@@ -1078,6 +1087,57 @@ console.log(response.content);
           </motion.div>
         </div>
       </section>
+
+      {/* QR Code Modal */}
+      <AnimatePresence>
+        {showQRCode && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={handleCloseQRCode}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="relative bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={handleCloseQRCode}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-stone-100 hover:bg-stone-200 transition-colors"
+              >
+                <svg className="w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* Content */}
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-stone-900 mb-2">联系我们</h3>
+                <p className="text-stone-600 mb-6">扫描二维码添加客服微信</p>
+
+                {/* QR Code Image */}
+                <div className="bg-stone-50 rounded-xl p-6 mb-6">
+                  <img
+                    src="/logo-1.png"
+                    alt="联系我们二维码"
+                    className="w-64 h-64 mx-auto object-contain"
+                  />
+                </div>
+
+                <p className="text-sm text-stone-500">
+                  工作时间：周一至周日 9:00-21:00
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="bg-stone-900 text-stone-300 py-12 sm:py-16">

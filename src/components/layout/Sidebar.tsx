@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  IconMenu2,
   IconX,
   IconChevronLeft,
   IconChevronRight,
@@ -175,6 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
                       className="space-y-1 overflow-hidden"
                     >
                       {section.items.map((item) => {
+                        if (!item) return null;
                         const isActive = location.pathname === item.path;
                         const Icon = item.icon;
 

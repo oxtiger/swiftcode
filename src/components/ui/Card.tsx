@@ -80,7 +80,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       className,
       ...props
     },
-    ref
+    _ref
   ) => {
     const baseClasses = [
       'relative overflow-hidden transition-all duration-300 ease-out',
@@ -141,7 +141,6 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 
     return (
       <motion.div
-        ref={ref}
         className={cn(
           baseClasses,
           variantClasses[variant],
@@ -166,7 +165,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
               }
             : undefined
         }
-        {...props}
+        {...(props as any)}
       >
         {children}
       </motion.div>
@@ -259,4 +258,3 @@ CardFooter.displayName = 'CardFooter';
 
 export { Card, CardHeader, CardContent, CardFooter };
 export default Card;
-export type { CardProps, CardHeaderProps, CardContentProps, CardFooterProps };

@@ -31,11 +31,11 @@ export type { BadgeProps } from './Badge';
 export { Loading } from './Loading';
 export type { LoadingProps } from './Loading';
 
-export { Modal, ModalHeader, ModalBody, ModalFooter } from './Modal';
+export { default as Modal } from './Modal';
 export type { ModalProps } from './Modal';
 
 // 加载和骨架屏组件
-export { Skeleton, StatsCardSkeleton, OverviewStatsSkeleton, DashboardStatsSkeleton } from './Skeleton';
+export { default as Skeleton } from './Skeleton';
 
 // 特色组件
 export { Terminal } from './Terminal';
@@ -217,17 +217,3 @@ export const COMPONENT_REGISTRY = {
   // 工具组件
   ThemeToggle: 'ThemeToggle - 主题切换组件',
 } as const;
-
-/**
- * 快速导入别名
- * 为常用组件提供简短的导入别名
- */
-export {
-  Button as Btn,
-  Card as Panel,
-  Loading as Spinner,
-  Modal as Dialog,
-  Badge as Tag,
-  Terminal as Term,
-  TypeWriter as Typer,
-};

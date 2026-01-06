@@ -12,7 +12,7 @@ import {
   useCurrentPeriodData,
   useApiStatsActions,
 } from '@/stores/apiStatsStore';
-import { UserStatsData } from '@/services/apiStats';
+import type { UserStatsData } from '@/services/apiStats';
 import { tokenManager } from '@/services/tokenManager';
 import { useNavigate } from 'react-router-dom';
 

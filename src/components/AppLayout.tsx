@@ -219,7 +219,7 @@ export const AppLayout: React.FC = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center py-4">
             <div className="inline-flex items-center rounded-xl bg-stone-100/80 p-1.5 backdrop-blur-sm">
-              {NAV_TABS.map((tab, index) => (
+              {NAV_TABS.map((tab) => (
                 <motion.button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id, tab.path)}

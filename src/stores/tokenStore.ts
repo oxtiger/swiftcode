@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { tokenManager, ApiToken } from '@/services/tokenManager';
+import { tokenManager, type ApiToken } from '@/services/tokenManager';
 import { useApiStatsStore } from '@/stores/apiStatsStore';
 
 /**
@@ -118,7 +118,8 @@ export const useTokenStore = create<TokenState>()(
           // 1. 先调用后端API验证token并获取名称
           const { fetchBasicInfo } = useApiStatsStore.getState();
           await fetchBasicInfo(token);
-
+          
+          console.log('fetchBasicInfo result:', useApiStatsStore.getState().statsData);
           // 2. 获取statsData中的名称
           const statsData = useApiStatsStore.getState().statsData;
           if (!statsData) {

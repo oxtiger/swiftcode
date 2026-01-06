@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  IconChevronDown,
   IconChevronRight,
-  IconDot,
-  IconCircle,
+  IconDots,
 } from '@tabler/icons-react';
-import { navigationConfig, RouteConfig } from '../../router/routes';
+import { navigationConfig, type RouteConfig } from '../../router/routes';
 import { usePermissions } from '../../router/guards';
 
 interface NavigationProps {
@@ -140,7 +138,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
                 {depth > 1 && (
                   <div className="w-4 border-t border-gray-300 dark:border-gray-600" />
                 )}
-                <IconDot className="h-3 w-3 text-gray-400" />
+                <IconDots className="h-3 w-3 text-gray-400" />
               </div>
             )}
 
@@ -229,14 +227,17 @@ const Navigation: React.FC<NavigationProps> = ({
     return (
       <nav className={`flex items-center space-x-1 ${className}`}>
         {filteredNavConfig.map((section) =>
-          section.items.map((item) => (
-            <NavigationItem
-              key={item.path}
-              item={item}
-              collapsed={false}
-              showLabels={showLabels}
-            />
-          ))
+          section.items.map((item) => {
+            if (!item) return null;
+            return (
+              <NavigationItem
+                key={item.path}
+                item={item}
+                collapsed={false}
+                showLabels={showLabels}
+              />
+            );
+          })
         )}
       </nav>
     );
@@ -255,14 +256,17 @@ const Navigation: React.FC<NavigationProps> = ({
 
           {/* 分组项目 */}
           <div className="space-y-1">
-            {section.items.map((item) => (
-              <NavigationItem
-                key={item.path}
-                item={item}
-                collapsed={collapsed}
-                showLabels={showLabels}
-              />
-            ))}
+            {section.items.map((item) => {
+              if (!item) return null;
+              return (
+                <NavigationItem
+                  key={item.path}
+                  item={item}
+                  collapsed={collapsed}
+                  showLabels={showLabels}
+                />
+              );
+            })}
           </div>
         </div>
       ))}

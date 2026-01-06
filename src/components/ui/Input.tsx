@@ -4,7 +4,7 @@ import { cn } from '@/utils';
 /**
  * Input组件的属性接口
  */
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /** 标签文本 */
   label?: string;
   /** 错误信息 */
