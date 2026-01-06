@@ -1,0 +1,121 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]: "[plugin:vite:react-babel]"
+    - generic [ref=e6]: "/Users/twq/projects/claude-relay-service/new-frontend/src/components/ui/Modal.tsx: Expecting Unicode escape sequence \\uXXXX. (177:17) 180 | },"
+  - generic [ref=e8] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/src/components/ui/Modal.tsx:177:17
+  - generic [ref=e9]: "175| scale: 1, 176| transition: { 177| type: \\\"spring\\\", | ^ 178| stiffness: 400, 179| damping: 25,"
+  - generic [ref=e10]:
+    - text: at constructor (
+    - generic [ref=e11] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:367:19
+    - text: ) at TypeScriptParserMixin.raise (
+    - generic [ref=e12] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:6630:19
+    - text: ) at TypeScriptParserMixin.readWord1 (
+    - generic [ref=e13] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:6590:16
+    - text: ) at TypeScriptParserMixin.readWord (
+    - generic [ref=e14] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:6610:23
+    - text: ) at TypeScriptParserMixin.getTokenFromCode (
+    - generic [ref=e15] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:6329:14
+    - text: ) at TypeScriptParserMixin.getTokenFromCode (
+    - generic [ref=e16] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:4830:11
+    - text: ) at TypeScriptParserMixin.getTokenFromCode (
+    - generic [ref=e17] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10009:11
+    - text: ) at TypeScriptParserMixin.nextToken (
+    - generic [ref=e18] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:5813:10
+    - text: ) at TypeScriptParserMixin.next (
+    - generic [ref=e19] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:5723:10
+    - text: ) at TypeScriptParserMixin.eat (
+    - generic [ref=e20] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:5727:12
+    - text: ) at TypeScriptParserMixin.parseObjectProperty (
+    - generic [ref=e21] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11959:14
+    - text: ) at TypeScriptParserMixin.parseObjPropValue (
+    - generic [ref=e22] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11988:100
+    - text: ) at TypeScriptParserMixin.parseObjPropValue (
+    - generic [ref=e23] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:9764:18
+    - text: ) at TypeScriptParserMixin.parsePropertyDefinition (
+    - generic [ref=e24] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11925:17
+    - text: ) at TypeScriptParserMixin.parseObjectLike (
+    - generic [ref=e25] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11840:21
+    - text: ) at TypeScriptParserMixin.parseExprAtom (
+    - generic [ref=e26] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11343:23
+    - text: ) at TypeScriptParserMixin.parseExprAtom (
+    - generic [ref=e27] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:4797:20
+    - text: ) at TypeScriptParserMixin.parseExprSubscripts (
+    - generic [ref=e28] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11085:23
+    - text: ) at TypeScriptParserMixin.parseUpdate (
+    - generic [ref=e29] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11070:21
+    - text: ) at TypeScriptParserMixin.parseMaybeUnary (
+    - generic [ref=e30] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11050:23
+    - text: ) at TypeScriptParserMixin.parseMaybeUnary (
+    - generic [ref=e31] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:9857:18
+    - text: ) at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (
+    - generic [ref=e32] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10903:61
+    - text: ) at TypeScriptParserMixin.parseExprOps (
+    - generic [ref=e33] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10908:23
+    - text: ) at TypeScriptParserMixin.parseMaybeConditional (
+    - generic [ref=e34] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10885:23
+    - text: ) at TypeScriptParserMixin.parseMaybeAssign (
+    - generic [ref=e35] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10835:21
+    - text: ) at TypeScriptParserMixin.parseMaybeAssign (
+    - generic [ref=e36] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:9806:20
+    - text: ) at
+    - generic [ref=e37] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10804:39
+    - text: at TypeScriptParserMixin.allowInAnd (
+    - generic [ref=e38] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:12436:12
+    - text: ) at TypeScriptParserMixin.parseMaybeAssignAllowIn (
+    - generic [ref=e39] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10804:17
+    - text: ) at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (
+    - generic [ref=e40] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:12503:17
+    - text: ) at TypeScriptParserMixin.parseObjectProperty (
+    - generic [ref=e41] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11960:83
+    - text: ) at TypeScriptParserMixin.parseObjPropValue (
+    - generic [ref=e42] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11988:100
+    - text: ) at TypeScriptParserMixin.parseObjPropValue (
+    - generic [ref=e43] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:9764:18
+    - text: ) at TypeScriptParserMixin.parsePropertyDefinition (
+    - generic [ref=e44] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11925:17
+    - text: ) at TypeScriptParserMixin.parseObjectLike (
+    - generic [ref=e45] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11840:21
+    - text: ) at TypeScriptParserMixin.parseExprAtom (
+    - generic [ref=e46] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11343:23
+    - text: ) at TypeScriptParserMixin.parseExprAtom (
+    - generic [ref=e47] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:4797:20
+    - text: ) at TypeScriptParserMixin.parseExprSubscripts (
+    - generic [ref=e48] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11085:23
+    - text: ) at TypeScriptParserMixin.parseUpdate (
+    - generic [ref=e49] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11070:21
+    - text: ) at TypeScriptParserMixin.parseMaybeUnary (
+    - generic [ref=e50] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:11050:23
+    - text: ) at TypeScriptParserMixin.parseMaybeUnary (
+    - generic [ref=e51] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:9857:18
+    - text: ) at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (
+    - generic [ref=e52] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10903:61
+    - text: ) at TypeScriptParserMixin.parseExprOps (
+    - generic [ref=e53] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10908:23
+    - text: ) at TypeScriptParserMixin.parseMaybeConditional (
+    - generic [ref=e54] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10885:23
+    - text: ) at TypeScriptParserMixin.parseMaybeAssign (
+    - generic [ref=e55] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10835:21
+    - text: ) at TypeScriptParserMixin.parseMaybeAssign (
+    - generic [ref=e56] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:9806:20
+    - text: ) at
+    - generic [ref=e57] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10804:39
+    - text: at TypeScriptParserMixin.allowInAnd (
+    - generic [ref=e58] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:12436:12
+    - text: ) at TypeScriptParserMixin.parseMaybeAssignAllowIn (
+    - generic [ref=e59] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:10804:17
+    - text: ) at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (
+    - generic [ref=e60] [cursor=pointer]: /Users/twq/projects/claude-relay-service/new-frontend/node_modules/@babel/parser/lib/index.js:12503:17
+  - generic [ref=e61]:
+    - text: Click outside, press
+    - generic [ref=e62]: Esc
+    - text: key, or fix the code to dismiss.
+    - text: You can also disable this overlay by setting
+    - code [ref=e63]: server.hmr.overlay
+    - text: to
+    - code [ref=e64]: "false"
+    - text: in
+    - code [ref=e65]: vite.config.js.
+```
