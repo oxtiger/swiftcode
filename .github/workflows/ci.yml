@@ -1,191 +1,191 @@
-name: CI/CD Pipeline
+name: Build and Push Docker Images
 
 on:
   push:
     branches:
       - main
-      - master
-      - develop
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - main
-      - master
-      - develop
-
-env:
-  NODE_VERSION: '20'
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # ==================== 安装依赖和代码检查 ====================
-  lint:
-    name: 代码检查
+  build-and-push:
     runs-on: ubuntu-latest
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
 
-      - name: 设置 Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 安装依赖
-        run: npm ci
-
-      - name: 运行 ESLint
-        run: npm run lint
-
-      - name: 运行类型检查
-        run: npm run type-check
-
-  # ==================== 测试 ====================
-  test:
-    name: 运行测试
-    runs-on: ubuntu-latest
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-
-      - name: 设置 Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 安装依赖
-        run: npm ci
-
-      - name: 安装 Playwright 浏览器
-        run: npx playwright install --with-deps
-
-      - name: 运行 Playwright 测试
-        run: npm run test
-
-      - name: 上传测试报告
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
-
-  # ==================== 构建 ====================
-  build:
-    name: 构建项目
-    runs-on: ubuntu-latest
-    needs: [lint, test]
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-
-      - name: 设置 Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: 安装依赖
-        run: npm ci
-
-      - name: 构建生产版本
-        run: npm run build
-
-      - name: 上传构建产物
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          retention-days: 1
-
-  # ==================== Docker 镜像构建 ====================
-  docker:
-    name: 构建并推送 Docker 镜像
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
+    # 需要写入 packages 权限才能推送到 GHCR
     permissions:
       contents: read
       packages: write
+
+    env:
+      REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+      APP_IMAGE_NAME: oxtiger/swiftcode           # 主应用镜像名
+      WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+      # GitHub Container Registry 配置
+      GHCR_REGISTRY: ghcr.io
+
     steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
+    - name: Set GHCR image names (lowercase)
+      run: |
+        # Docker 镜像名必须是小写
+        OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+        echo "GHCR_APP_IMAGE=ghcr.io/${OWNER_LC}/swiftcode" >> $GITHUB_ENV
 
-      - name: 设置 Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    - name: Debug
+      run: |
+        echo "URL: $REGISTRY_URL"
+        echo "USER: ${{ secrets.REGISTRY_USER }}"
+        echo "GHCR: $GHCR_REGISTRY"
+        echo "GHCR_APP_IMAGE: $GHCR_APP_IMAGE"
 
-      - name: 登录 GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: 提取 Docker 元数据
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
+    - name: Set image tag
+      id: vars
+      run: |
+        SHORT_SHA=${GITHUB_SHA::7}
+        DATE_TAG=$(date -u +%Y%m%d-%H%M)
+        echo "TAG=${DATE_TAG}-${SHORT_SHA}" >> $GITHUB_ENV
+        echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+        echo "DATE_TAG=$DATE_TAG" >> $GITHUB_ENV
 
-      - name: 构建并推送 Docker 镜像
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+    - name: Login to Harbor
+      id: login
+      run: |
+        echo "${{ secrets.REGISTRY_PASS }}" | docker login $REGISTRY_URL -u ${{ secrets.REGISTRY_USER }} --password-stdin
 
-  # ==================== 部署到开发环境 ====================
-  deploy-dev:
-    name: 部署到开发环境
-    runs-on: ubuntu-latest
-    needs: docker
-    if: github.ref == 'refs/heads/develop'
-    environment:
-      name: development
-      url: http://${{ secrets.DEV_SERVER_HOST }}
-    steps:
-      - name: 部署到开发服务器
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DEV_SERVER_HOST }}
-          username: ${{ secrets.DEV_SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ${{ secrets.DEV_DEPLOY_PATH }}
-            docker-compose pull
-            docker-compose up -d
+    - name: Login to GitHub Container Registry
+      id: login-ghcr
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-  # ==================== 部署到生产环境 ====================
-  deploy-prod:
-    name: 部署到生产环境
-    runs-on: ubuntu-latest
-    needs: docker
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-    environment:
-      name: production
-      url: https://${{ secrets.PROD_SERVER_HOST }}
-    steps:
-      - name: 部署到生产服务器
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.PROD_SERVER_HOST }}
-          username: ${{ secrets.PROD_SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ${{ secrets.PROD_DEPLOY_PATH }}
-            docker-compose pull
-            docker-compose up -d
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'web/package-lock.json'
+
+    - name: Build Frontend
+      id: build-frontend
+      run: |
+        cd web
+        npm ci
+        npm run build
+
+    - name: Build App Docker image
+      id: build-app
+      run: |
+        FULL_IMAGE=$REGISTRY_URL/$APP_IMAGE_NAME
+        # 构建并打标签（Harbor + GHCR）
+        docker build \
+          -t $FULL_IMAGE:${{ env.TAG }} \
+          -t $FULL_IMAGE:latest \
+          -t $GHCR_APP_IMAGE:${{ env.TAG }} \
+          -t $GHCR_APP_IMAGE:latest \
+          .
+
+    - name: Push App Docker image to GHCR
+      id: push-app-ghcr
+      run: |
+        docker push $GHCR_APP_IMAGE:${{ env.TAG }}
+        docker push $GHCR_APP_IMAGE:latest
+
+    - name: Push App Docker image to Harbor
+      id: push-app
+      run: |
+        FULL_IMAGE=$REGISTRY_URL/$APP_IMAGE_NAME
+        docker push $FULL_IMAGE:${{ env.TAG }}
+        docker push $FULL_IMAGE:latest
+
+
+    - name: Notify Success
+      if: success()
+      run: |
+        APP_IMAGE=$REGISTRY_URL/${APP_IMAGE_NAME}
+        APP_PULL_CMD="docker pull ${APP_IMAGE}:${{ env.TAG }}"
+        GHCR_APP_PULL_CMD="docker pull ${GHCR_APP_IMAGE}:${{ env.TAG }}"
+        COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+        WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+        MSG=$(cat <<EOF
+        🎉 构建成功
+
+        📦 Harbor 镜像:
+        • 主应用: ${APP_IMAGE}:${{ env.TAG }}
+
+        📦 GHCR 镜像:
+        • 主应用: ${GHCR_APP_IMAGE}:${{ env.TAG }}
+
+        🕒 构建时间: ${{ env.DATE_TAG }}
+        🔖 标签: ${{ env.TAG }}
+        🔁 Commit: ${{ env.SHORT_SHA }}
+        👤 提交者: ${{ github.actor }}
+        📋 分支: ${{ github.ref_name }}
+
+        📥 Harbor 拉取命令:
+        \`\`\`
+        ${APP_PULL_CMD}
+        \`\`\`
+
+        📥 GHCR 拉取命令:
+        \`\`\`
+        ${GHCR_APP_PULL_CMD}
+        \`\`\`
+
+        🔗 链接:
+        • Commit: ${COMMIT_URL}
+        • Workflow: ${WORKFLOW_URL}
+        EOF
+        )
+
+        curl -sS -X POST "$WECOM_WEBHOOK" \
+          -H "Content-Type: application/json" \
+          -d "$(jq -nc --arg text "$MSG" '{msgtype:"text", text:{content:$text}}')"
+
+    - name: Notify Failure
+      if: failure()
+      run: |
+        APP_IMAGE=$REGISTRY_URL/${APP_IMAGE_NAME}
+        COMMIT_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+        WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+        # 获取失败的步骤信息
+        FAILED_STEP="未知"
+        if [[ "${{ steps.login.outcome }}" == "failure" ]]; then
+          FAILED_STEP="登录Harbor失败"
+        elif [[ "${{ steps.login-ghcr.outcome }}" == "failure" ]]; then
+          FAILED_STEP="登录GHCR失败"
+        elif [[ "${{ steps.build-frontend.outcome }}" == "failure" ]]; then
+          FAILED_STEP="前端构建失败"
+        elif [[ "${{ steps.build-app.outcome }}" == "failure" ]]; then
+          FAILED_STEP="主应用Docker镜像构建失败"
+        elif [[ "${{ steps.push-app.outcome }}" == "failure" ]]; then
+          FAILED_STEP="主应用镜像推送到Harbor失败"
+        elif [[ "${{ steps.push-app-ghcr.outcome }}" == "failure" ]]; then
+          FAILED_STEP="主应用镜像推送到GHCR失败"
+        fi
+
+        MSG=$(cat <<EOF
+        ❌ 构建失败
+
+        📦 主应用镜像: ${APP_IMAGE}
+        🕒 构建时间: ${{ env.DATE_TAG }}
+        🔖 标签: ${{ env.TAG }}
+        🔁 Commit: ${{ env.SHORT_SHA }}
+        👤 提交者: ${{ github.actor }}
+        📋 分支: ${{ github.ref_name }}
+        💥 失败步骤: ${FAILED_STEP}
+
+        🔗 链接:
+        • Commit: ${COMMIT_URL}
+        • 查看详情: ${WORKFLOW_URL}
+
+        请检查构建日志并修复问题后重新提交。
+        EOF
+        )
+
+        curl -sS -X POST "$WECOM_WEBHOOK" \
+          -H "Content-Type: application/json" \
+          -d "$(jq -nc --arg text "$MSG" '{msgtype:"text", text:{content:$text}}')"
