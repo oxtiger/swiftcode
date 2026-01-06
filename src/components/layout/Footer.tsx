@@ -79,7 +79,7 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
               </h3>
             </div>
             <p className="mb-3 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-              强大的 AI API 中转服务，支持 Claude 和 Gemini 双平台。
+              强大的 AI API 中转服务，支持 Claude CODE API 无缝接入，开箱即用，接口100%原生，无需改造，接入即用，开发效率翻倍。
               提供多账户管理、API Key 认证、代理配置和现代化 Web 管理界面。
             </p>
             <div className="flex flex-wrap gap-2">

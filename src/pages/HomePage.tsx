@@ -82,7 +82,7 @@ export const HomePage: React.FC = () => {
 
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
                 <TypeWriter
-                  text="强大的 AI API 中转服务，支持 Claude 和 Gemini 双平台"
+                  text="强大的 AI API 中转服务，支持 Claude CODE API 无缝接入，开箱即用，接口100%原生，无需改造，接入即用，开发效率翻倍"
                   speed={30}
                 />
               </p>
