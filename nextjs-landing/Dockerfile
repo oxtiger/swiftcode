@@ -19,11 +19,14 @@ COPY . .
 # 构建 Next.js 应用
 RUN npm run build
 
+# 确保 public 目录存在（即使为空）
+RUN mkdir -p /app/public
+
 # 阶段 3: 生产运行
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # 创建非 root 用户
 RUN addgroup --system --gid 1001 nodejs
@@ -38,6 +41,6 @@ USER nextjs
 
 EXPOSE 3001
 
-ENV PORT 3001
+ENV PORT=3001
 
 CMD ["node", "server.js"]
