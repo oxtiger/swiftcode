@@ -9,7 +9,7 @@ import {
   useApiStatsLoading,
   useApiStatsError,
   useStatsData,
-  useCurrentPeriodData,
+  useDailyStats,
   useApiStatsActions,
 } from '@/stores/apiStatsStore';
 import type { UserStatsData } from '@/services/apiStats';
@@ -33,7 +33,7 @@ interface DashboardStat {
  */
 const generateDashboardStats = (
   statsData: UserStatsData | null,
-  currentPeriodData: any
+  dailyStats: any
 ): DashboardStat[] => {
   if (!statsData) {
     return [
@@ -128,8 +128,8 @@ const generateDashboardStats = (
     ];
   }
 
-  // 使用真实数据
-  const todayData = currentPeriodData || {
+  // 使用真实的今日数据
+  const todayData = dailyStats || {
     requests: 0,
     inputTokens: 0,
     outputTokens: 0,
@@ -248,7 +248,7 @@ export const DashboardPage: React.FC = () => {
   const isStatsLoading = useApiStatsLoading();
   const statsError = useApiStatsError();
   const statsData = useStatsData();
-  const currentPeriodData = useCurrentPeriodData();
+  const dailyStats = useDailyStats(); // 使用今日统计数据
   const { refreshBasicStats } = useApiStatsActions();
 
   // 组件加载时检查并刷新数据（仅当token变化时）
@@ -276,7 +276,7 @@ export const DashboardPage: React.FC = () => {
   // API调用现在由AppLayout中的导航切换处理
 
   // 生成仪表板统计数据
-  const dashboardStats = generateDashboardStats(statsData, currentPeriodData);
+  const dashboardStats = generateDashboardStats(statsData, dailyStats);
 
   /**
    * Debug: 检查localStorage状态

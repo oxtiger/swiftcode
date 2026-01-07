@@ -14,6 +14,7 @@ interface ApiStatsState {
   statsPeriod: 'daily' | 'monthly';
 
   // 数据
+  apiId: string | null; // 新增: 保存当前查询的 apiId
   statsData: UserStatsData | null;
   modelStats: ModelStatsData[];
   dailyStats: any | null;
@@ -84,6 +85,7 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
   error: '',
   statsPeriod: 'daily',
 
+  apiId: null, // 新增: 初始化 apiId
   statsData: null,
   modelStats: [],
   dailyStats: null,
@@ -108,13 +110,16 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
         throw new Error(idResult.message || '获取 API Key ID 失败');
       }
 
+      const apiId = idResult.data.id;
+
       // 2. 获取用户统计数据
-      const statsResult = await apiStatsClient.getUserStats(idResult.data.id);
+      const statsResult = await apiStatsClient.getUserStats(apiId);
       if (!statsResult.success || !statsResult.data) {
         throw new Error(statsResult.message || '查询统计数据失败');
       }
 
       set({
+        apiId: apiId, // 保存 apiId
         statsData: statsResult.data,
         loading: false,
         error: '',
@@ -162,7 +167,10 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
         throw new Error(statsResult.message || '查询统计数据失败');
       }
 
-      set({ statsData: statsResult.data });
+      set({
+        apiId: apiId, // 保存 apiId
+        statsData: statsResult.data
+      });
 
       // 3. 并行加载今日和本月的统计数据
       await Promise.all([
@@ -278,6 +286,7 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
   switchPeriod: async (period: 'daily' | 'monthly') => {
     const currentPeriod = get().statsPeriod;
     const isLoading = get().modelStatsLoading;
+    const apiId = get().apiId;
 
     if (currentPeriod === period || isLoading) {
       return;
@@ -285,13 +294,12 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
 
     set({ statsPeriod: period });
 
-    // 如果有统计数据，需要重新加载对应时间段的模型统计
-    const { statsData } = get();
-    if (statsData) {
-      // 这里需要 apiId，但我们只有 statsData
-      // 实际使用中，可能需要在 store 中也保存 apiId
-      // 或者重新设计 API 调用方式
-      console.warn('Period switch needs apiId to reload model stats');
+    // 如果有 apiId，重新加载对应时间段的数据
+    if (apiId) {
+      await Promise.all([
+        get().loadModelStats(apiId, period),
+        get().loadPeriodStats(apiId, period)
+      ]);
     }
 
     // 更新计算属性
@@ -333,6 +341,7 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
   // 清除数据
   clearData: () => {
     set({
+      apiId: null, // 清除 apiId
       statsData: null,
       modelStats: [],
       dailyStats: null,
@@ -350,6 +359,7 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
       modelStatsLoading: false,
       error: '',
       statsPeriod: 'daily',
+      apiId: null, // 重置 apiId
       statsData: null,
       modelStats: [],
       dailyStats: null,
@@ -378,19 +388,25 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
         throw new Error(idResult.message || '获取 API Key ID 失败');
       }
 
+      const apiId = idResult.data.id;
+
       // 2. 获取基本统计数据
-      const statsResult = await apiStatsClient.getUserStats(idResult.data.id);
+      const statsResult = await apiStatsClient.getUserStats(apiId);
       console.log('refreshBasicStats - getUserStats result:', statsResult);
       if (!statsResult.success || !statsResult.data) {
         throw new Error(statsResult.message || '获取统计数据失败');
       }
 
+      // 3. 同时获取今日数据 (仪表板需要显示今日统计)
+      await get().loadPeriodStats(apiId, 'daily');
+
       set({
+        apiId: apiId, // 保存 apiId
         statsData: statsResult.data,
         loading: false,
       });
 
-      console.log('refreshBasicStats - statsData set successfully');
+      console.log('refreshBasicStats - statsData and dailyStats set successfully');
     } catch (err) {
       console.error('Refresh basic stats error:', err);
       const errorMessage =
@@ -407,21 +423,27 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
       return;
     }
 
-    const { statsPeriod } = get();
+    const { statsPeriod, apiId: savedApiId } = get();
     set({ modelStatsLoading: true, error: '' });
 
     try {
-      // 1. 获取 API Key ID
-      const idResult = await apiStatsClient.getKeyId(activeToken.token);
-      if (!idResult.success || !idResult.data) {
-        throw new Error(idResult.message || '获取 API Key ID 失败');
+      let apiId = savedApiId;
+
+      // 如果没有保存的 apiId，则重新获取
+      if (!apiId) {
+        const idResult = await apiStatsClient.getKeyId(activeToken.token);
+        if (!idResult.success || !idResult.data) {
+          throw new Error(idResult.message || '获取 API Key ID 失败');
+        }
+        apiId = idResult.data.id;
+        set({ apiId }); // 保存 apiId
       }
 
-      const apiId = idResult.data.id;
-
-      // 2. 获取模型统计数据
-      await get().loadModelStats(apiId, statsPeriod);
-      await get().loadPeriodStats(apiId, statsPeriod);
+      // 获取模型统计数据和时间段统计
+      await Promise.all([
+        get().loadModelStats(apiId, statsPeriod),
+        get().loadPeriodStats(apiId, statsPeriod)
+      ]);
 
       set({ modelStatsLoading: false });
     } catch (err) {
@@ -442,6 +464,10 @@ export const useModelStats = () =>
   useApiStatsStore((state) => state.modelStats);
 export const useCurrentPeriodData = () =>
   useApiStatsStore((state) => state.currentPeriodData);
+export const useDailyStats = () =>
+  useApiStatsStore((state) => state.dailyStats); // 新增: 导出今日统计数据
+export const useMonthlyStats = () =>
+  useApiStatsStore((state) => state.monthlyStats); // 新增: 导出本月统计数据
 export const useUsagePercentages = () =>
   useApiStatsStore((state) => state.usagePercentages);
 export const useStatsPeriod = () =>
