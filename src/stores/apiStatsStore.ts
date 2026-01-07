@@ -303,7 +303,7 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
     }
 
     // 更新计算属性
-    const { statsPeriod: newPeriod, dailyStats, monthlyStats } = get();
+    const { statsPeriod: newPeriod, dailyStats, monthlyStats, statsData } = get();
 
     // 更新 currentPeriodData
     let currentPeriodData;
