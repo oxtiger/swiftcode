@@ -296,46 +296,47 @@ export const useApiStatsStore = create<ApiStatsStore>((set, get) => ({
 
     // 如果有 apiId，重新加载对应时间段的数据
     if (apiId) {
+      // 先加载数据
       await Promise.all([
         get().loadModelStats(apiId, period),
         get().loadPeriodStats(apiId, period)
       ]);
+
+      // 数据加载完成后，重新获取最新的状态并更新计算属性
+      const { dailyStats, monthlyStats, statsData } = get();
+
+      // 更新 currentPeriodData
+      let currentPeriodData;
+      if (period === 'daily') {
+        currentPeriodData = dailyStats || defaultPeriodData;
+      } else {
+        currentPeriodData = monthlyStats || defaultPeriodData;
+      }
+
+      // 计算使用百分比
+      let usagePercentages = defaultUsagePercentages;
+      if (statsData && currentPeriodData) {
+        const current = currentPeriodData;
+        const limits = statsData.limits;
+
+        usagePercentages = {
+          tokenUsage:
+            limits.tokenLimit > 0
+              ? Math.min((current.allTokens / limits.tokenLimit) * 100, 100)
+              : 0,
+          costUsage:
+            limits.dailyCostLimit > 0
+              ? Math.min((limits.currentDailyCost / limits.dailyCostLimit) * 100, 100)
+              : 0,
+          requestUsage:
+            limits.rateLimitRequests > 0
+              ? Math.min((limits.currentWindowRequests / limits.rateLimitRequests) * 100, 100)
+              : 0,
+        };
+      }
+
+      set({ currentPeriodData, usagePercentages });
     }
-
-    // 更新计算属性
-    const { statsPeriod: newPeriod, dailyStats, monthlyStats, statsData } = get();
-
-    // 更新 currentPeriodData
-    let currentPeriodData;
-    if (newPeriod === 'daily') {
-      currentPeriodData = dailyStats || defaultPeriodData;
-    } else {
-      currentPeriodData = monthlyStats || defaultPeriodData;
-    }
-
-    // 计算使用百分比
-    let usagePercentages = defaultUsagePercentages;
-    if (statsData && currentPeriodData) {
-      const current = currentPeriodData;
-      const limits = statsData.limits;
-
-      usagePercentages = {
-        tokenUsage:
-          limits.tokenLimit > 0
-            ? Math.min((current.allTokens / limits.tokenLimit) * 100, 100)
-            : 0,
-        costUsage:
-          limits.dailyCostLimit > 0
-            ? Math.min((limits.currentDailyCost / limits.dailyCostLimit) * 100, 100)
-            : 0,
-        requestUsage:
-          limits.rateLimitRequests > 0
-            ? Math.min((limits.currentWindowRequests / limits.rateLimitRequests) * 100, 100)
-            : 0,
-      };
-    }
-
-    set({ currentPeriodData, usagePercentages });
   },
 
   // 清除数据

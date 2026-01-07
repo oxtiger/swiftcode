@@ -443,8 +443,8 @@ export const UsageStatsPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* 费用趋势图 */}
-        <Card className="p-6">
+        {/* 费用趋势图 - 暂时隐藏，等待后端提供真实数据 */}
+        {/* <Card className="p-6">
           <h3 className="mb-6 text-lg font-semibold text-stone-900">
             {statsPeriod === 'daily' ? '近7日' : '近30日'}费用趋势
           </h3>
@@ -477,7 +477,7 @@ export const UsageStatsPage: React.FC = () => {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </Card>
+        </Card> */}
       </div>
     );
   };

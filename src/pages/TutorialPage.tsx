@@ -63,6 +63,28 @@ export const TutorialPage: React.FC = () => {
   const renderWindowsTutorial = () => {
     return (
       <div className="space-y-10">
+        {/* API URL 配置信息 */}
+        <div className="rounded-lg border border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50 p-4">
+          <div className="mb-3 flex items-center">
+            <span className="mr-2 text-lg">🔗</span>
+            <h3 className="text-base font-bold text-stone-900">API 服务地址配置</h3>
+          </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <div className="rounded border border-orange-200 bg-white p-2">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-orange-600">主服务地址（推荐）</span>
+              </div>
+              <code className="text-sm font-mono text-stone-900">https://cli.swiftcode.cc</code>
+            </div>
+            <div className="rounded border border-orange-200 bg-white p-2">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-orange-600">备用服务地址</span>
+              </div>
+              <code className="text-sm font-mono text-stone-900">https://api0.swiftcode.cc</code>
+            </div>
+          </div>
+        </div>
+
         {/* 第一步：安装 Node.js */}
         <div className="tutorial-section">
           <h4 className="mb-4 flex items-center text-xl font-semibold text-stone-800">
@@ -324,6 +346,28 @@ export const TutorialPage: React.FC = () => {
   const rendermacOSTutorial = () => {
     return (
       <div className="space-y-10">
+        {/* API URL 配置信息 */}
+        <div className="rounded-lg border border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50 p-4">
+          <div className="mb-3 flex items-center">
+            <span className="mr-2 text-lg">🔗</span>
+            <h3 className="text-base font-bold text-stone-900">API 服务地址配置</h3>
+          </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <div className="rounded border border-orange-200 bg-white p-2">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-orange-600">主服务地址（推荐）</span>
+              </div>
+              <code className="text-sm font-mono text-stone-900">cli.swiftcode.cc</code>
+            </div>
+            <div className="rounded border border-orange-200 bg-white p-2">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-orange-600">备用服务地址</span>
+              </div>
+              <code className="text-sm font-mono text-stone-900">api0.swiftcode.cc</code>
+            </div>
+          </div>
+        </div>
+
         {/* 第一步：安装 Node.js */}
         <div className="tutorial-section">
           <h4 className="mb-4 flex items-center text-xl font-semibold text-stone-800">
@@ -535,6 +579,28 @@ export const TutorialPage: React.FC = () => {
   const renderLinuxTutorial = () => {
     return (
       <div className="space-y-10">
+        {/* API URL 配置信息 */}
+        <div className="rounded-lg border border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50 p-4">
+          <div className="mb-3 flex items-center">
+            <span className="mr-2 text-lg">🔗</span>
+            <h3 className="text-base font-bold text-stone-900">API 服务地址配置</h3>
+          </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <div className="rounded border border-orange-200 bg-white p-2">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-orange-600">主服务地址（推荐）</span>
+              </div>
+              <code className="text-sm font-mono text-stone-900">cli.swiftcode.cc</code>
+            </div>
+            <div className="rounded border border-orange-200 bg-white p-2">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-orange-600">备用服务地址</span>
+              </div>
+              <code className="text-sm font-mono text-stone-900">api0.swiftcode.cc</code>
+            </div>
+          </div>
+        </div>
+
         {/* 第一步：安装 Node.js */}
         <div className="tutorial-section">
           <h4 className="mb-4 flex items-center text-xl font-semibold text-stone-800">
